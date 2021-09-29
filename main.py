@@ -9,6 +9,13 @@ class Student:
         return set(self.grades) == {5}
 
 
+class Teacher:
+    def __init__(self):
+        ...
+
+    def put_grade(self, student, grade):
+        student.get_grade(grade)
+
 
 if __name__ == "__main__":
     # Этап 1
@@ -25,4 +32,13 @@ if __name__ == "__main__":
 
     print(s1.is_excellent(), s2.is_excellent())
 
+    # Этап 2
 
+    t1 = Teacher()
+    t2 = Teacher()
+
+    t1.put_grade(s1, 2)
+    t1.put_grade(s2, 5)
+
+    t2.put_grade(s1, 5)
+    t2.put_grade(s2, 5)
