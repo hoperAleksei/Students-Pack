@@ -2,7 +2,8 @@ import random
 
 
 class Student:
-    def __init__(self):
+    def __init__(self, name):
+        self.name = name
         self.grades = []
 
     def get_grade(self, grade):
@@ -10,6 +11,9 @@ class Student:
 
     def is_excellent(self):
         return set(self.grades) == {5}
+
+    def get_name(self):
+        return self.name
 
 
 class Teacher:
@@ -63,10 +67,72 @@ class Lesson:
             self.teacher.put_grade(cur)
 
 
+class Parent:
+    def __init__(self, mood, *children):
+        self.mood = mood
+        self.children_list = [*children]
+
+    def average_excellent(self):
+        count = 0
+        excellent_count = 0
+
+        for c in self.children_list:
+            count += 1
+            if c.is_excellent():
+                excellent_count += 1
+
+            return excellent_count/count
+
+    def say_some_th(self, c):
+        if c.is_excellent:
+            if self.mood:
+                print(c.get_name(), " is nice child")
+            else:
+                print(c.get_name(), " is nice, but I angry")
+        else:
+            if self.mood:
+                print(c.get_name(), " is ok")
+            else:
+                print(c.get_name(), " is very stupid guy")
+
+    def say_iter(self):
+        for c in self.children_list:
+            self.say_some_th(c)
+
+    def say_random(self):
+        cur = random.choice(self.children_list)
+        self.say_some_th(cur)
+
+    def say_all(self):
+        factor = self.average_excellent()
+
+        if factor == 1:
+            if self.mood:
+                print("My children is nice")
+            else:
+                print("My children is good")
+        elif 0.5 < factor < 1:
+            if self.mood:
+                print("My children is good")
+            else:
+                print("My children is OK")
+        else:
+            if self.mood:
+                print("My children is OK")
+            else:
+                print("My children is terrible")
+
+    def say_one(self, child):
+        if not (child in self.children_list):
+            raise ValueError("ERROR: Child is not assigment to this parent")
+        else:
+            self.say_some_th(child)
+
+
 if __name__ == "__main__":
     # Этап 1
-    s1 = Student()
-    s2 = Student()
+    s1 = Student("Oleg")
+    s2 = Student("Ivan")
 
     s1.get_grade(2)
     s1.get_grade(3)
@@ -117,3 +183,18 @@ if __name__ == "__main__":
 
     l4.time_to_grade()
     print(s1.grades, s2.grades)
+
+    # Этап 7
+
+    p1 = Parent(True, s1)
+    p2 = Parent(False, s1, s2)
+
+    p1.say_random()
+    p2.say_all()
+    p2.say_iter()
+    p1.say_one(s1)
+
+    try:
+        p1.say_one(s2)
+    except ValueError as e:
+        print(e)
