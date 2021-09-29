@@ -15,6 +15,8 @@ class Student:
 class Teacher:
     def __init__(self, mood):
         self.mood = mood  # хорошее насроение = True
+        self.change = 5
+        self.count = 0
 
     def put_grade(self, student):
         if student.is_excellent():
@@ -27,6 +29,11 @@ class Teacher:
                 grade = 4
             else:
                 grade = random.randint(2, 3)
+
+        self.count += 1
+        if self.count == self.change:
+            self.mood = bool(random.getrandbits(1))
+            self.count = 0
 
         student.get_grade(grade)
 
@@ -95,7 +102,7 @@ if __name__ == "__main__":
     l2.time_to_grade()
     print(s1.grades, s2.grades)
 
-    # Этап 5
+    # Этап 5, 6
 
     ct1 = ConstTeacher(True, 5)
     ct2 = ConstTeacher(False, 2)
