@@ -31,6 +31,22 @@ class Teacher:
         student.get_grade(grade)
 
 
+class Lesson:
+    def __init__(self, teacher, *students):
+        self.teacher = teacher
+        self.students_list = [*students]
+
+    def time_to_grade(self):
+        grade_count = random.randint(0, len(self.students_list))
+
+        ungraded = self.students_list.copy()
+        for i in range(grade_count):
+            cur = random.choice(ungraded)
+            ungraded.remove(cur)
+
+            self.teacher.put_grade(cur)
+
+
 if __name__ == "__main__":
     # Этап 1
     s1 = Student()
@@ -56,3 +72,16 @@ if __name__ == "__main__":
 
     t2.put_grade(s1)
     t2.put_grade(s2)
+
+    # Этап 4
+
+    l1 = Lesson(t1, s1, s2)
+    l2 = Lesson(t2, s1, s2)
+
+    print(s1.grades, s2.grades)
+
+    l1.time_to_grade()
+    print(s1.grades, s2.grades)
+
+    l2.time_to_grade()
+    print(s1.grades, s2.grades)
