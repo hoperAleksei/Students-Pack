@@ -31,6 +31,15 @@ class Teacher:
         student.get_grade(grade)
 
 
+class ConstTeacher(Teacher):
+    def __init__(self, mood, const):
+        super().__init__(mood)
+        self.const = const
+
+    def put_grade(self, student):
+        student.get_grade(self.const)
+
+
 class Lesson:
     def __init__(self, teacher, *students):
         self.teacher = teacher
@@ -84,4 +93,20 @@ if __name__ == "__main__":
     print(s1.grades, s2.grades)
 
     l2.time_to_grade()
+    print(s1.grades, s2.grades)
+
+    # Этап 5
+
+    ct1 = ConstTeacher(True, 5)
+    ct2 = ConstTeacher(False, 2)
+
+    l3 = Lesson(ct1, s1, s2)
+    l4 = Lesson(ct2, s1, s2)
+
+    print(s1.grades, s2.grades)
+
+    l3.time_to_grade()
+    print(s1.grades, s2.grades)
+
+    l4.time_to_grade()
     print(s1.grades, s2.grades)
