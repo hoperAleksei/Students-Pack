@@ -1,3 +1,6 @@
+import random
+
+
 class Student:
     def __init__(self):
         self.grades = []
@@ -10,10 +13,21 @@ class Student:
 
 
 class Teacher:
-    def __init__(self):
-        ...
+    def __init__(self, mood):
+        self.mood = mood  # хорошее насроение = True
 
-    def put_grade(self, student, grade):
+    def put_grade(self, student):
+        if student.is_excellent():
+            if self.mood:
+                grade = 5
+            else:
+                grade = random.randint(4, 5)
+        else:
+            if self.mood:
+                grade = 4
+            else:
+                grade = random.randint(2, 3)
+
         student.get_grade(grade)
 
 
@@ -32,13 +46,13 @@ if __name__ == "__main__":
 
     print(s1.is_excellent(), s2.is_excellent())
 
-    # Этап 2
+    # Этап 2, 3
 
-    t1 = Teacher()
-    t2 = Teacher()
+    t1 = Teacher(False)
+    t2 = Teacher(True)
 
-    t1.put_grade(s1, 2)
-    t1.put_grade(s2, 5)
+    t1.put_grade(s1)
+    t1.put_grade(s2)
 
-    t2.put_grade(s1, 5)
-    t2.put_grade(s2, 5)
+    t2.put_grade(s1)
+    t2.put_grade(s2)
