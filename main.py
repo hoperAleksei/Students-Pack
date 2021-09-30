@@ -132,11 +132,25 @@ class Parent:
             else:
                 print("My children is terrible")
 
+    def alien_child(self, child):
+        raise ValueError("ERROR: Child is not assigment to this parent")
+
+    def add_children(self, *children):
+        self.children_list.extend(children)
+
     def say_one(self, child):
         if not (child in self.children_list):
-            raise ValueError("ERROR: Child is not assigment to this parent")
+            self.alien_child(child)
         else:
             self.say_some_th(child)
+
+
+class Grandmother(Parent):
+    def say_some_th(self, c):
+        print(c, " is nice child")
+
+    def alien_child(self, child):
+        Parent.say_some_th(self, child)
 
 
 class Meeting:
@@ -270,3 +284,21 @@ if __name__ == "__main__":
     m2()
     m3()
     m4()
+
+    # Этап 9
+
+    g1 = Grandmother(True, s1)
+    g2 = Grandmother(False, s2)
+
+    s1.add_parents(g1)
+    s2.add_parents(g2)
+
+    g1.say_one(s1)
+    g1.say_one(s2)
+
+    g2.say_one(s2)
+    g2.say_one(s1)
+
+    m5 = Meeting((t1, t2, ct1, ct2), (g1, g2), (l1, l2, l3, l4))
+
+    m5()
