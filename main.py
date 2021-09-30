@@ -2,9 +2,10 @@ import random
 
 
 class Student:
-    def __init__(self, name):
+    def __init__(self, name, *parents):
         self.name = name
         self.grades = []
+        self.parents = [*parents]
 
     def get_grade(self, grade):
         self.grades.append(grade)
@@ -12,7 +13,10 @@ class Student:
     def is_excellent(self):
         return set(self.grades) == {5}
 
-    def get_name(self):
+    def add_parents(self, *parents):
+        self.parents.extend(parents)
+
+    def __str__(self):
         return self.name
 
 
@@ -52,11 +56,12 @@ class ConstTeacher(Teacher):
 
 
 class Lesson:
-    def __init__(self, teacher, *students):
+    def __init__(self, name, teacher, *students):
+        self.name = name
         self.teacher = teacher
         self.students_list = [*students]
+        self.graded = []
 
-    def time_to_grade(self):
         grade_count = random.randint(0, len(self.students_list))
 
         ungraded = self.students_list.copy()
@@ -64,7 +69,12 @@ class Lesson:
             cur = random.choice(ungraded)
             ungraded.remove(cur)
 
+            self.graded.append(cur)
+
             self.teacher.put_grade(cur)
+
+    def __str__(self):
+        return self.name
 
 
 class Parent:
@@ -86,14 +96,14 @@ class Parent:
     def say_some_th(self, c):
         if c.is_excellent:
             if self.mood:
-                print(c.get_name(), " is nice child")
+                print(c, " is nice child")
             else:
-                print(c.get_name(), " is nice, but I angry")
+                print(c, " is nice, but I angry")
         else:
             if self.mood:
-                print(c.get_name(), " is ok")
+                print(c, " is ok")
             else:
-                print(c.get_name(), " is very stupid guy")
+                print(c, " is very stupid guy")
 
     def say_iter(self):
         for c in self.children_list:
@@ -129,6 +139,40 @@ class Parent:
             self.say_some_th(child)
 
 
+class Meeting:
+    def __init__(self, teachers, parents, lessons):
+        self.teachers_list = list(teachers)
+        self.parents_list = list(parents)
+        self.lessons_list = list(lessons)
+
+    def __call__(self, *args, **kwargs):
+        absent = set()
+        for les in self.lessons_list:
+            print("Lesson: {}".format(les))
+
+            if not (les.teacher in self.teachers_list):
+                continue
+
+            for s in les.graded:
+                ind = True
+
+                for p in s.parents:
+                    if p in self.parents_list:
+                        p.say_one(s)
+
+                        ind = False
+
+                if ind:
+                    absent.add(s)
+
+        if len(absent) > 0:
+            print(*absent, sep=", ", end=" ")
+            if len(absent) > 1:
+                print("are absent")
+            else:
+                print("is absent")
+
+
 if __name__ == "__main__":
     # Этап 1
     s1 = Student("Oleg")
@@ -157,32 +201,42 @@ if __name__ == "__main__":
 
     # Этап 4
 
-    l1 = Lesson(t1, s1, s2)
-    l2 = Lesson(t2, s1, s2)
+    print(s1.grades, s2.grades)
+
+    l1 = Lesson("Math", t1, s1, s2)
 
     print(s1.grades, s2.grades)
 
-    l1.time_to_grade()
+    l2 = Lesson("Frontend", t2, s1, s2)
+
     print(s1.grades, s2.grades)
 
-    l2.time_to_grade()
-    print(s1.grades, s2.grades)
+    # l1.time_to_grade()
+    # print(s1.grades, s2.grades)
+    #
+    # l2.time_to_grade()
+    # print(s1.grades, s2.grades)
 
     # Этап 5, 6
 
     ct1 = ConstTeacher(True, 5)
     ct2 = ConstTeacher(False, 2)
 
-    l3 = Lesson(ct1, s1, s2)
-    l4 = Lesson(ct2, s1, s2)
+    print(s1.grades, s2.grades)
+
+    l3 = Lesson("Backend", ct1, s1, s2)
 
     print(s1.grades, s2.grades)
 
-    l3.time_to_grade()
+    l4 = Lesson("Lecture", ct2, s1, s2)
+
     print(s1.grades, s2.grades)
 
-    l4.time_to_grade()
-    print(s1.grades, s2.grades)
+    # l3.time_to_grade()
+    # print(s1.grades, s2.grades)
+    #
+    # l4.time_to_grade()
+    # print(s1.grades, s2.grades)
 
     # Этап 7
 
@@ -198,3 +252,21 @@ if __name__ == "__main__":
         p1.say_one(s2)
     except ValueError as e:
         print(e)
+
+    # Этап 8
+
+    s1.add_parents(p1, p2)
+    s2.add_parents(p2)
+
+    m1 = Meeting((t1, t2, ct1, ct2), (p1, p2), (l1, l2, l3, l4))
+
+    m2 = Meeting((t1, t2, ct1, ct2), (p1, ), (l1, l2, l3, l4))
+
+    m3 = Meeting((t1, t2, ct1, ct2), (p2, ), (l1, l2, l3, l4))
+
+    m4 = Meeting((t1, ), (p1, p2), (l1, l2, l3, l4))
+
+    m1()
+    m2()
+    m3()
+    m4()
